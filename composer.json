@@ -1,0 +1,38 @@
+{
+	"name" : "phpmv/ubiquity-jwt",
+	"description" : "JWT wrapper for Ubiquity framework",
+	"type" : "extension",
+	"keywords" : [
+		"php",
+		"framework",
+		"mvc",
+		"jwt",
+		"tools",
+		"php-framework"
+	],
+	"require": {
+		"phpmv/ubiquity": "^2.4"
+    },
+	"license" : "Apache-2.0",
+	"authors" : [{
+			"name" : "Jean-Christophe HERON",
+			"email" : "myaddressmail@gmail.com",
+			"role" : "Lead developer"
+		},
+		{
+			"name" : "Guillaume JACOPIN",
+			"email" : "guillaume.jacopin@sts-sio-caen.info",
+			"role" : "Lead developer"
+		}
+	],
+	"autoload" : {
+		"psr-4" : {
+			"Ubiquity\\" : "src/Ubiquity/"
+		}
+	},
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "1.0.x-dev"
+		}
+	}
+}
