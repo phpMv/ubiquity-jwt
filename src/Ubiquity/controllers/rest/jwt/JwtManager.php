@@ -9,8 +9,8 @@ use function Composer\Autoload\includeFile;
 class JwtManager {
 
 	public static array $supportedLibraries = [
-		"emarref/jwt",
-		"firebase/php-jwt"
+		"emarref/jwt" => "Emarref\Jwt\Jwt",
+		"firebase/php-jwt" => "Firebase\JWT\JWT"
 	];
 	public static string $library = "";
 
@@ -22,11 +22,11 @@ class JwtManager {
 
 	public static function setLibrary($libraryName = null):void {
 		if($libraryName == null){
-			$composer = \json_decode(file_get_contents('composer.json'));
-			foreach($composer->require as $name => $value){
-				if(\array_search($name, self::$supportedLibraries)){
-					$lib = \ucfirst(explode('/', $name)[0]);
-					self::$library = "Ubiquity\\controllers\\rest\\jwt\\".$lib."Jwt";
+			foreach(self::$supportedLibraries as $libraryName => $className){
+				if(class_exists($className)){
+					$libraryName = explode('\\', $className)[0];
+					self::$library = "Ubiquity\\controllers\\rest\\jwt\\".$libraryName."Jwt";
+					break;
 				}
 			}
 		}
