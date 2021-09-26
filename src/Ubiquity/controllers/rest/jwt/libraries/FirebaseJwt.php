@@ -4,13 +4,15 @@
 namespace Ubiquity\controllers\rest\jwt\libraries;
 
 use Firebase\JWT\JWT;
+use Ubiquity\controllers\rest\jwt\JwtInterface;
 
-class FirebaseJwt extends BaseJwt implements JwtInterface{
+class FirebaseJwt implements JwtInterface{
 
+	private string $secretCode;
 	private array $algorithm;
 
-	public function __construct__() {
-		parent::__construct("secretCode");
+	public function __construct() {
+		$this->secretCode = "secretCode";
 		$this->algorithm = ["HS256"];
 	}
 

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Ubiquity\controllers\rest\jwt;
+namespace Ubiquity\controllers\rest\jwt\libraries;
 
 
 use Emarref\Jwt\Algorithm\AlgorithmInterface;
@@ -13,8 +13,9 @@ use Emarref\Jwt\Encryption\Symmetric;
 use Emarref\Jwt\Jwt;
 use Emarref\Jwt\Token;
 use Emarref\Jwt\Verification\Context;
+use Ubiquity\controllers\rest\jwt\JwtInterface;
 
-class EmarrefJwt extends BaseJwt implements JwtInterface{
+class EmarrefJwt implements JwtInterface{
 
     private string $secretCode;
     private Jwt $jwt;
@@ -22,8 +23,8 @@ class EmarrefJwt extends BaseJwt implements JwtInterface{
     private Symmetric|Asymmetric $encryption;
     private Context $context;
 
-    public function __construct__():void {
-        parent::__construct("secretCode");
+    public function __construct() {
+        $this->secretCode = "secretCode";
         $this->jwt = new Jwt();
         $this->algorithm = new Hs256($this->secretCode);
         $this->encryption = Factory::create($this->algorithm);
