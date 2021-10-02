@@ -5,14 +5,12 @@ namespace Ubiquity\controllers\rest\jwt\libraries;
 
 use Firebase\JWT\JWT;
 use Ubiquity\controllers\rest\jwt\JwtInterface;
+use Ubiquity\controllers\rest\jwt\traits\BaseJwt;
 
-class FirebaseJwt implements JwtInterface{
+class FirebaseJwt extends BaseJwt implements JwtInterface{
 
-	private string $secretCode;
-	private array $algorithm;
-
-	public function __construct() {
-		$this->secretCode = "secretCode";
+	public function __construct(&$config) {
+		parent::__construct($config);
 		$this->algorithm = ["HS256"];
 	}
 
@@ -27,8 +25,15 @@ class FirebaseJwt implements JwtInterface{
 		return $decoded;
 	}
 
+	private function _generateToken(array $claims, string $encryption):string {
+		return JWT::encode($claims, $encryption);
+	}
+
 	public function generateToken(array $claims):void {
-		$token = JWT::encode($claims, $this->secretCode);
-		print(\json_encode(['token' => $token ]));
+		$tokens["accessToken"] = $this->_generateToken($claims, $this->secretCode);
+		if($this->refreshToken){
+			$tokens["refreshToken"] = $this->_generateToken($claims, $this->refreshToken);
+		}
+		print(\json_encode($tokens));
 	}
 }

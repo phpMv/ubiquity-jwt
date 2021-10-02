@@ -4,23 +4,26 @@
 namespace Ubiquity\controllers\rest\jwt;
 
 
+use function Composer\Autoload\includeFile;
+
 class JwtManager {
 
 	public static array $supportedLibraries = [
-		"emarref/jwt" => "Emarref\Jwt\Jwt",
-		"firebase/php-jwt" => "Firebase\JWT\JWT"
+		"Emarref" => "Emarref\Jwt\Jwt",
+		"Firebase" => "Firebase\JWT\JWT",
+		"Lcobucci" => "Lcobucci\JWT\Configuration",
 	];
 
 	public static ?JwtInterface $library = null;
 
-	public static function start():void {
+	public static function start($config):void {
 		if(!self::$library){
-			self::setLibrary();
+			self::setLibrary($config);
 		}
 	}
 
-	public static function setLibrary($libraryName = null):void {
-		if($libraryName == null){
+	public static function setLibrary(&$config):void {
+		if($config['jwt']['library'] == null){
 			foreach(self::$supportedLibraries as $libraryName => $className){
 				if(class_exists($className)){
 					$libraryName = explode('\\', $className)[0];
@@ -29,8 +32,8 @@ class JwtManager {
 			}
 		}
 		else{
-			$libraryName = "Ubiquity\\controllers\\rest\\jwt\\libraries\\".$libraryName."Jwt";
+			$libraryName = "Ubiquity\\controllers\\rest\\jwt\\libraries\\".$config['jwt']['library']."Jwt";
 		}
-		self::$library = new $libraryName();
+		self::$library = new $libraryName($config);
 	}
 }
