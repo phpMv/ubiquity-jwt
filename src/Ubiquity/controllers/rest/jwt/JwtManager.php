@@ -4,36 +4,32 @@
 namespace Ubiquity\controllers\rest\jwt;
 
 
-use function Composer\Autoload\includeFile;
-
 class JwtManager {
+	private static array $defaultConfig=[];
 
 	public static array $supportedLibraries = [
-		"Emarref" => "Emarref\Jwt\Jwt",
-		"Firebase" => "Firebase\JWT\JWT",
-		"Lcobucci" => "Lcobucci\JWT\Configuration",
+		'Emarref' => 'Emarref\Jwt\Jwt',
+		'Firebase' => 'Firebase\JWT\JWT',
+		'Lcobucci' => 'Lcobucci\JWT\Configuration',
 	];
 
 	public static ?JwtInterface $library = null;
 
-	public static function start($config):void {
-		if(!self::$library){
-			self::setLibrary($config);
-		}
+	public static function start(&$config):void {
+		self::$library??=self::getLibrary($config['jwt']??self::$defaultConfig);
+	}
+	
+	private static function getLibraryName():string{
+	    foreach(self::$supportedLibraries as $libraryName => $className){
+	        if(\class_exists($className)){
+	            return "Ubiquity\\controllers\\rest\\jwt\\libraries\\{$libraryName}Jwt";
+	        }
+	    }
+	    throw new UbiquityJWTException("No JWT library available!");
 	}
 
-	public static function setLibrary(&$config):void {
-		if($config['jwt']['library'] == null){
-			foreach(self::$supportedLibraries as $libraryName => $className){
-				if(class_exists($className)){
-					$libraryName = explode('\\', $className)[0];
-					$libraryName = "Ubiquity\\controllers\\rest\\jwt\\libraries\\".$libraryName."Jwt";
-				}
-			}
-		}
-		else{
-			$libraryName = "Ubiquity\\controllers\\rest\\jwt\\libraries\\".$config['jwt']['library']."Jwt";
-		}
-		self::$library = new $libraryName($config);
+	public static function getLibrary($config):JwtInterface {
+	    $libraryName=(self::$supportedLibraries[$config['jwt']['library']??false])??self::getLibraryName();
+		return new $libraryName($config['jwt']);
 	}
 }
